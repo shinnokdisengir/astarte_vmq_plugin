@@ -113,3 +113,14 @@
     {ok, Term} = erl_parse:parse_term(T),
     Term
   end}.
+
+{mapping, "astarte_vmq_plugin.allow_amqp_message_expiry", "astarte_vmq_plugin.allow_amqp_message_expiry",
+  [
+    {datatype, {enum, [true, false]}},
+    {default, false}
+  ]}.
+
+{mapping, "astarte_vmq_plugin.amqp_message_expiry_ms", "astarte_vmq_plugin.amqp_message_expiry_ms",
+  [
+    {datatype, integer}
+  ]}.

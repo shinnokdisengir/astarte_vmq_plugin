@@ -67,11 +67,18 @@ defmodule Astarte.VMQ.Plugin.AMQPClient do
     sharding_key = Keyword.fetch!(opts, :sharding_key)
 
     # TODO: handle basic.return
-    full_opts =
+    amqp_opts =
       opts
       |> Keyword.delete(:sharding_key)
       |> Keyword.put(:persistent, true)
       |> Keyword.put(:mandatory, true)
+
+    full_opts =
+      if Config.allow_amqp_message_expiry() do
+        Keyword.put_new(amqp_opts, expiration: Config.amqp_message_expiry_ms())
+      else
+        amqp_opts
+      end
 
     queue_prefix = Config.data_queue_prefix()
     queue_index = :erlang.phash2(sharding_key, Config.data_queue_count())

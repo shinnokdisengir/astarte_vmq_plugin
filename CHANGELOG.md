@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+### Added
+- Allow to use custom expiry for AMQP messages using the `allow_amqp_message_expiry`
+  feature gate. If used, the `amqp_message_expiry_ms` env var must be set.
+
 ## [1.0.1] - 2021-12-16
 ### Fixed
 - Do not override VerneMQ config `max_message_rate` value.

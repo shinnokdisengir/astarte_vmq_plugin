@@ -147,6 +147,14 @@ defmodule Astarte.VMQ.Plugin.Config do
     )
   end
 
+  def allow_amqp_message_expiry do
+    Application.get_env(:astarte_vmq_plugin, :allow_amqp_message_expiry)
+  end
+
+  def amqp_message_expiry_ms do
+    Application.get_env(:astarte_vmq_plugin, :amqp_message_expiry_ms)
+  end
+
   defp normalize_opts_strings(amqp_options) do
     Enum.map(amqp_options, fn
       {:username, value} -> {:username, to_string(value)}
