@@ -175,6 +175,10 @@ trap 'siguser1_handler' SIGUSR1
 trap 'sigterm_handler' SIGTERM
 
 # Start VerneMQ
-/opt/vernemq/bin/vernemq console -noshell -noinput $@
-pid=$(ps aux | grep '[b]eam.smp' | awk '{print $2}')
+/opt/vernemq/bin/vernemq console -noshell -noinput $@ &
+pid=$!
+
+# FIXME this hardcodes the log level to info, we should find a way to configure it
+sleep 10s && /opt/vernemq/bin/vmq-admin log level logger=default level=info
+
 wait $pid

@@ -12,7 +12,7 @@ WORKDIR /build
 RUN apt-get -qq update && apt-get -qq install libsnappy-dev libssl-dev
 
 # Let's start by building VerneMQ
-RUN git clone https://github.com/vernemq/vernemq.git -b 2.0.0
+RUN git clone https://github.com/vernemq/vernemq.git -b 2.0.1
 
 RUN cd vernemq && \
   make rel && \
