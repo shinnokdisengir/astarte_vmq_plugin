@@ -17,20 +17,20 @@ ARG BUILD_ENV=prod
 ENV MIX_ENV=$BUILD_ENV
 
 # Cache elixir deps
-ADD mix.exs mix.lock astarte_vernemq/
-RUN cd astarte_vernemq && \
+ADD mix.exs mix.lock astarte_vmq_plugin/
+RUN cd astarte_vmq_plugin && \
   mix do deps.get, deps.compile && \
   cd ..
 
 # Add all the rest
-ADD . astarte_vernemq/
+ADD . astarte_vmq_plugin/
 
 # Build and release
-RUN cd astarte_vernemq && \
+RUN cd astarte_vmq_plugin && \
   mix do compile, release && \
   cd ..
 
-RUN echo astarte_vernemq/_build/$BUILD_ENV/rel/astarte_vernemq/bin/astarte_vernemq
+RUN echo astarte_vmq_plugin/_build/$BUILD_ENV/rel/astarte_vmq_plugin/bin/astarte_vmq_plugin
 
 # TODO change me
 FROM debian:bookworm-slim
@@ -66,9 +66,9 @@ RUN ARCH=$(uname -m | sed -e 's/aarch64/arm64/') && \
     ln -s /vernemq/log /var/log/vernemq
 
 ## Add the Elixir plugin
-COPY --from=builder /build/astarte_vernemq/_build/$BUILD_ENV/rel/astarte_vernemq /etc/astarte_vernemq
+COPY --from=builder /build/astarte_vmq_plugin/_build/$BUILD_ENV/rel/astarte_vmq_plugin /etc/astarte_vmq_plugin
 # Copy the schema over
-COPY --from=builder /build/astarte_vernemq/priv/astarte_vernemq.schema /vernemq/share/schema/astarte_vernemq.schema
+COPY --from=builder /build/astarte_vmq_plugin/priv/astarte_vmq_plugin.schema /vernemq/share/schema/astarte_vmq_plugin.schema
 
 # Ports
 # 1883  MQTT

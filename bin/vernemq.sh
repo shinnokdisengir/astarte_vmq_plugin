@@ -281,8 +281,8 @@ EOF
     configure_vernemq_listeners
 
     # Add Elixir plugin to conf
-    echo "plugins.astarte_vernemq = on" >> ${VERNEMQ_CONF_FILE}
-    echo "plugins.astarte_vernemq.path = /etc/astarte_vernemq" >> ${VERNEMQ_CONF_FILE}
+    echo "plugins.astarte_vmq_plugin = on" >> ${VERNEMQ_CONF_FILE}
+    echo "plugins.astarte_vmq_plugin.path = /etc/astarte_vmq_plugin" >> ${VERNEMQ_CONF_FILE}
 
     echo "########## End ##########" >> ${VERNEMQ_CONF_FILE}
 fi
