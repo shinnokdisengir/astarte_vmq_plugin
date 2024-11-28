@@ -32,8 +32,9 @@ defmodule Astarte.VMQ.Plugin.Publisher do
 
   # Callbacks
 
-  def init([registry_mfa]) do
-    {module, fun, args} = registry_mfa
+  def init([_registry_mfa]) do
+    #{module, fun, args} = registry_mfa
+    {module, fun, args} = {:vmq_reg, :direct_plugin_exports, [:astarte_vmq_plugin]}
     {register_fun, publish_fun, _sub_and_unsub_fun} = apply(module, fun, args)
     true = is_function(register_fun, 0)
     true = is_function(publish_fun, 3)
