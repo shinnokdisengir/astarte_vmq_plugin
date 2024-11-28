@@ -15,15 +15,32 @@ defmodule AstarteVernemq.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {AstarteVernemq.Application, []}
+      mod: {Astarte.VMQ.Plugin.Application, []},
+      env: [
+        vmq_plugin_hooks: [
+          {:auth_on_publish, Astarte.VMQ.Plugin, :auth_on_publish, 6, []},
+          {:auth_on_register, Astarte.VMQ.Plugin, :auth_on_register, 5, []},
+          {:auth_on_subscribe, Astarte.VMQ.Plugin, :auth_on_subscribe, 3, []},
+          {:on_client_offline, Astarte.VMQ.Plugin, :on_client_offline, 1, []},
+          {:on_client_gone, Astarte.VMQ.Plugin, :on_client_gone, 1, []},
+          {:on_publish, Astarte.VMQ.Plugin, :on_publish, 6, []},
+          {:on_register, Astarte.VMQ.Plugin, :on_register, 3, []}
+        ]
+      ]
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:amqp, "~> 3.3"},
+      {:astarte_rpc, github: "astarte-platform/astarte_rpc"},
+      {:astarte_core, github: "astarte-platform/astarte_core"},
+      {:vernemq_dev, github: "vernemq/vernemq_dev"},
+      {:excoveralls, "~> 0.15", only: :test},
+      {:mississippi, github: "secomind/mississippi"},
+      {:dialyxir, "~> 1.4", only: [:dev, :ci], runtime: false},
+      {:xandra, "~> 0.14"}
     ]
   end
 end
