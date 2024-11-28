@@ -1,4 +1,42 @@
+## TODO: build the plugin and link it here
+FROM hexpm/elixir:1.15.5-erlang-26.1-debian-bullseye-20230612-slim AS builder
+
+# install build dependencies
+# --allow-releaseinfo-change allows to pull from 'oldstable'
+RUN apt-get update --allow-releaseinfo-change -y \
+  && apt-get install -y build-essential git curl \
+  && apt-get clean && rm -f /var/lib/apt/lists/*_*
+
+WORKDIR /build
+
+ENV MIX_ENV=prod
+
+# Pass --build-arg BUILD_ENV=dev to build a dev image
+ARG BUILD_ENV=prod
+
+ENV MIX_ENV=$BUILD_ENV
+
+# Cache elixir deps
+ADD mix.exs mix.lock astarte_vernemq/
+RUN cd astarte_vernemq && \
+  mix do deps.get, deps.compile && \
+  cd ..
+
+# Add all the rest
+ADD . astarte_vernemq/
+
+# Build and release
+RUN cd astarte_vernemq && \
+  mix do compile, release && \
+  cd ..
+
+RUN echo astarte_vernemq/_build/$BUILD_ENV/rel/astarte_vernemq/bin/astarte_vernemq
+
+# TODO change me
 FROM debian:bookworm-slim
+
+# We have to redefine this here since it goes out of scope for each build stage
+ARG BUILD_ENV=prod
 
 RUN apt-get update && \
     apt-get -y install bash procps openssl iproute2 curl jq libsnappy-dev net-tools nano && \
@@ -26,6 +64,11 @@ RUN ARCH=$(uname -m | sed -e 's/aarch64/arm64/') && \
     ln -s /vernemq/etc /etc/vernemq && \
     ln -s /vernemq/data /var/lib/vernemq && \
     ln -s /vernemq/log /var/log/vernemq
+
+## Add the Elixir plugin
+COPY --from=builder /build/astarte_vernemq/_build/$BUILD_ENV/rel/astarte_vernemq /etc/astarte_vernemq
+# Copy the schema over
+COPY --from=builder /build/astarte_vernemq/priv/astarte_vernemq.schema /vernemq/share/schema/astarte_vernemq.schema
 
 # Ports
 # 1883  MQTT
